@@ -10,8 +10,8 @@
         <p> Welcome {{current_user.username}} </p>
     {% endif %}
     <div class="wrapper">
-        <form method="POST" action="/login">
-          <h1>Login</h1>
+        <form method="POST" action="/signup">
+          <h1>Sign Up</h1>
           <div class="input-box">
             <label for="username">Username</label>
             <input type="text" placeholder="Username" class="validate" value="bob" name="username" required>
@@ -22,10 +22,10 @@
             <input type="password" class="validate" placeholder="Password" value="bobpass" name="password" required>
             <i class="material-icons">lock</i>
           </div>
-          <button type="submit" class="btn">Login</button>
+          <button type="submit" class="btn">Sign Up</button>
           <div class="register-link">
-            <p>Dont have an account? </p>
-            <button type="button" class="btn">Sign Up</button>
+            <p>Already have an account? </p>
+            <a href="/" class="btn"> Login</a>
           </div>
         </form>
       </div>

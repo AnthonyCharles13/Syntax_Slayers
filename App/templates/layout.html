@@ -2,7 +2,7 @@
 <html>
   <head>
   
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
      <!--Import Google Icon Font-->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!-- Compiled and minified CSS -->
@@ -14,9 +14,11 @@
   </head>
   <body>
     
-      <nav class="purple">
+      <nav class="blue">
           <div class="nav-wrapper">
               <a href="#!" class="brand-logo center">{% block page %}{% endblock %}</a>
+              
+              {% if is_authenticated %}
               <ul id="nav-mobile" class="left">
                   <li><a href="/">Home</a></li>
                   <li><a href="/users">Users Jinja</a></li>
@@ -25,11 +27,11 @@
                   {% endif %}
                   <li><a href="/static/users">Users JS</a></li>
               </ul>
-              {% if is_authenticated %}
               <ul id="nav-mobile" class="right">
                 <li><a href="/logout">Logout</a></li>
               </ul>
               {% else %}
+              <!--
               <form class="right navbar-form" method="POST" action="/login" style="display: flex; flex-wrap: nowrap; align-items: center; margin-right: 10px;">
                   <div class="input-field" style="margin-right: 10px;">
                       <input placeholder="username" value="bob" name="username" type="text" class="validate" required>
@@ -41,6 +43,7 @@
                   </div>
                   <button type="submit" class="btn waves-effect waves-light">Login</button>
               </form>
+              -->
               {% endif %}
               
           </div>
