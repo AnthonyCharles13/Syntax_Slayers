@@ -9,24 +9,5 @@
     {% if is_authenticated %}
         <p> Welcome {{current_user.username}} </p>
     {% endif %}
-    <div class="wrapper">
-        <form method="POST" action="/login">
-          <h1>Login</h1>
-          <div class="input-box">
-            <label for="username">Username</label>
-            <input type="text" placeholder="Username" class="validate" value="bob" name="username" required>
-            <i class="material-icons">account_circle</i>
-          </div>
-          <div class="input-box">
-            <label for="password">Password</label>
-            <input type="password" class="validate" placeholder="Password" value="bobpass" name="password" required>
-            <i class="material-icons">lock</i>
-          </div>
-          <button type="submit" class="btn">Login</button>
-          <div class="register-link">
-            <p>Dont have an account? </p>
-            <button type="button" class="btn">Sign Up</button>
-          </div>
-        </form>
-      </div>
+    
 {% endblock %}

@@ -61,7 +61,7 @@ def signup_user_action():
 
     # Create the new user
     create_user(username, password)
-    flash(f"User {username} created!")
+    flash('Account created!')
 
     # Log in the newly created user
     token = login(username, password)
