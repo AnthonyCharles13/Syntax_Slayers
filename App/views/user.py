@@ -3,7 +3,7 @@ from flask_jwt_extended import jwt_required
 from flask_jwt_extended import current_user
 
 from.index import index_views
-from App.models import Exercise, UserRoutine
+from App.models import Exercise, UserRoutine, db
 from App.controllers import (
     create_user,
     get_all_users,
@@ -117,7 +117,7 @@ def get_routines_page():
 @jwt_required()
 def create_routine():
     user_id = current_user.id
-    routine_name = request.form.get('routine_name')
+    routine_name = request.form.get('routine-name')
 
     # Check if routine with the same name already exists for the user
     existing_routine = UserRoutine.query.filter_by(user_id=user_id, routine_name=routine_name).first()
