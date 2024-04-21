@@ -1,5 +1,6 @@
 from App.models import User
 from App.models import Exercise
+from App.models import UserRoutine
 from App.database import db
 
 def create_user(username, password):

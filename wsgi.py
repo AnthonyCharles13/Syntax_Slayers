@@ -16,6 +16,38 @@ migrate = get_migrate(app)
 def initialize():
     db.drop_all()
     db.create_all()
+    csv_file = 'csv/MegaGymDataset.csv'
+
+    try:
+        with open(csv_file, newline='', encoding='utf-8') as csvfile:
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                # Handle missing or empty fields
+                for key, value in row.items():
+                    if value == '':
+                        row[key] = None
+                
+                # Create Exercise object and add to database
+                exercise = Exercise(
+                    title=row['Title'],
+                    description=row['Desc'],
+                    exercise_type=row['Type'],
+                    bodypart=row['BodyPart'],
+                    equipment=row['Equipment'],
+                    level=row['Level'],
+                    rating=float(row['Rating']) if row['Rating'] else None,
+                    rating_desc=row['RatingDesc']
+                )
+                db.session.add(exercise)
+
+        # Commit changes to the database
+        db.session.commit()
+        print("Exercises initialized successfully.")
+
+    except Exception as e:
+        # Rollback changes and print error message
+        db.session.rollback()
+        print("Error initializing exercises:", e)
     create_user('bob', 'bobpass')
     print('database intialized')
 
