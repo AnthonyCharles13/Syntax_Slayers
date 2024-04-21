@@ -2,31 +2,57 @@
 {% block title %}App Users{% endblock %}
 {% block page %}App Users{% endblock %}
 
-{{ super() }}
-
-{% block styles%}
+{% block styles %}
 <style>
     .collection .collection-item.active{
         background-color: #E53935;
     }
+
+    .list-container {
+        border: 2px solid #ccc;
+        border-radius: 5px;
+        max-height: 200px;
+        overflow-y: scroll;
+        padding: 20px;
+    }
+
+    .heading {
+        text-align: center;
+    }
+
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="row">
-    <div class="col m5 list-container collection" style="max-height: 88vh;">
-        <h1 class="text-center">EXERCISES</h1>
-        {% if exercises %}
-            {% for exercise in exercises %}
-                <a id= "{{exercise.id}}" href="#" class="collection-item black-text">{{exercise.title}}</a>
-            {% endfor %}
-        {% else %}
-            <p>No exercises found.</p>
-        {% endif %}
+    <div class="col m5">
+        <div class="heading"><h5>EXERCISES</h5></div>
+        <div class="list-container collection" style="max-height: 78vh; overflow-y: scroll; margin-left: 10px;">
+            {% if exercises %}
+                {% for exercise in exercises %}
+                    <a id="{{exercise.id}}" href="#" class="collection-item black-text">{{exercise.title}}</a>
+                {% endfor %}
+            {% else %}
+                <p>No exercises found.</p>
+            {% endif %}
+        </div>
     </div>
     
     <div class="col m7">
-        <p class="text-center">Selected Exercise</p>
+        <div class="heading"><h5>INFORMATION</h5></div>
+        <div>
+            <h5 style="text-align: center;">TITLE</h5>
+            <h6>Description</h6>
+            <p>Blah blah blah</p>
+            <h6>Type</h6>
+            <p>Blah blah blah</p>
+            <h6>Body Part</h6>
+            <p>Blah blah blah</p>
+            <h6>Equipment</h6>
+            <p>Blah blah blah</p>
+            <h6>Level</h6>
+            <p>Blah blah blah</p>
+        </div>
     </div>
 </div>
 {% endblock %}

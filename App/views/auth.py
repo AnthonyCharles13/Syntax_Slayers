@@ -22,7 +22,6 @@ def get_user_page():
 @auth_views.route('/exercises', methods=['GET'])
 def get_exercise_page():
     exercises = Exercise.query.all()
-    print(exercises)
     return render_template('exercises.html', exercises=exercises)
 
 @auth_views.route('/identify', methods=['GET'])

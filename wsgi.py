@@ -1,7 +1,7 @@
-import click, pytest, sys
+import click, pytest, sys, csv
 from flask import Flask
 from flask.cli import with_appcontext, AppGroup
-
+from App.models import *
 from App.database import db, get_migrate
 from App.main import create_app
 from App.controllers import ( create_user, get_all_users_json, get_all_users )
@@ -16,7 +16,7 @@ migrate = get_migrate(app)
 def initialize():
     db.drop_all()
     db.create_all()
-    csv_file = 'csv/MegaGymDataset.csv'
+    csv_file = 'csv/megaGymDataset.csv'
 
     try:
         with open(csv_file, newline='', encoding='utf-8') as csvfile:

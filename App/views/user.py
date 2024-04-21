@@ -81,7 +81,6 @@ def signup_user_action():
 @user_views.route('/exercises', methods=['GET'])
 def get_exercise_page():
     exercises = Exercise.query.all()
-    print(exercises)
     return render_template('exercises.html', exercises=exercises)
 
 
