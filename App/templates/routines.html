@@ -34,16 +34,20 @@
     .routine-heading {
         margin-left: 30px; /* Adjust margin to create space between Create Routine and input */
     }
+
+    .create-routine-container button {
+    margin-top: 10px; /* Adjust the margin to bring down the button */
+}
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="row">
+<div class="row" style="margin-bottom: 10px;">
     <div class="col s12">
         <div class="create-routine-container">
             <h5 class="routine-heading">Create Routine</h5>
-            <form id="create-routine-form" class="col s9" method="POST" action="{{ url_for('user_views.create_routine') }}">
-                <div class="input-field">
+            <form id="create-routine-form" class="col s10" method="POST" action="{{ url_for('user_views.create_routine') }}">
+                <div class="input-field col s10">
                     <input id="routine-name" type="text" class="validate">
                     <label for="routine-name">Routine Name</label>
                 </div>
