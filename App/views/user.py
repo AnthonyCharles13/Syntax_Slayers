@@ -2,14 +2,15 @@ from flask import Blueprint, render_template, jsonify, request, send_from_direct
 from flask_jwt_extended import jwt_required, current_user as jwt_current_user, set_access_cookies
 
 from.index import index_views
-
+from App.models import Exercise
 from App.controllers import (
     create_user,
     get_all_users,
     get_all_users_json,
     jwt_required,
     login,
-    get_user_by_username
+    get_user_by_username,
+    get_all_exercises
 )
 
 user_views = Blueprint('user_views', __name__, template_folder='../templates')
@@ -75,6 +76,14 @@ def signup_user_action():
     else:
         flash("Failed to log in after signup")
         return redirect(url_for('user_views.get_signup_page'))
+
+
+@user_views.route('/exercises', methods=['GET'])
+def get_exercise_page():
+    exercises = Exercise.query.all()
+    print(exercises)
+    return render_template('exercises.html', exercises=exercises)
+
 
 @user_views.route('/api/users', methods=['GET'])
 def get_users_action():

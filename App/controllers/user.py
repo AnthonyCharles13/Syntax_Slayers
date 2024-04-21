@@ -1,4 +1,5 @@
 from App.models import User
+from App.models import Exercise
 from App.database import db
 
 def create_user(username, password):
@@ -30,4 +31,6 @@ def update_user(id, username):
         db.session.add(user)
         return db.session.commit()
     return None
-    
+
+def get_all_exercises():
+    return Exercise.query.all()

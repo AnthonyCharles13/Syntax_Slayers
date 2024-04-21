@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block title %}App Users{% endblock %}
+{% block page %}App Users{% endblock %}
+
+{{ super() }}
+
+{% block styles%}
+<style>
+    .collection .collection-item.active{
+        background-color: #E53935;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col m5 list-container collection" style="max-height: 88vh;">
+        <h1 class="text-center">EXERCISES</h1>
+        {% if exercises %}
+            {% for exercise in exercises %}
+                <a id= "{{exercise.id}}" href="#" class="collection-item black-text">{{exercise.title}}</a>
+            {% endfor %}
+        {% else %}
+            <p>No exercises found.</p>
+        {% endif %}
+    </div>
+    
+    <div class="col m7">
+        <p class="text-center">Selected Exercise</p>
+    </div>
+</div>
+{% endblock %}

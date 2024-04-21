@@ -2,9 +2,10 @@ from flask import Blueprint, render_template, jsonify, request, flash, send_from
 from flask_jwt_extended import jwt_required, current_user, unset_jwt_cookies, set_access_cookies
 
 from.index import index_views
-
+from App.models import Exercise
 from App.controllers import (
-    login
+    login,
+    get_all_exercises
 )
 
 auth_views = Blueprint('auth_views', __name__, template_folder='../templates')
@@ -17,6 +18,12 @@ Page/Action Routes
 def get_user_page():
     users = get_all_users()
     return render_template('users.html', users=users)
+
+@auth_views.route('/exercises', methods=['GET'])
+def get_exercise_page():
+    exercises = Exercise.query.all()
+    print(exercises)
+    return render_template('exercises.html', exercises=exercises)
 
 @auth_views.route('/identify', methods=['GET'])
 @jwt_required()
