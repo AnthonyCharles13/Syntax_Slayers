@@ -1,8 +1,9 @@
 from App.database import db
+from App.models import Exercise
 class UserRoutine(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    exercise_id = db.Column(db.Integer, db.ForeignKey('exercise.id'), nullable=False)
-    routine_name = db.Column(db.String(256), nullable=False, unique=True)
+    exercise_id = db.Column(db.Integer, db.ForeignKey('exercise.id'), nullable=True)
+    routine_name = db.Column(db.String(256), nullable=False, unique=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     user = db.relationship('User', backref=db.backref('user_routines', lazy=True))
     exercise = db.relationship('Exercise')

@@ -48,7 +48,7 @@
             <h5 class="routine-heading">Create Routine</h5>
             <form id="create-routine-form" class="col s10" method="POST" action="{{ url_for('user_views.create_routine') }}">
                 <div class="input-field col s10">
-                    <input id="routine-name" type="text" class="validate">
+                    <input id="routine-name" name="routine-name" type="text" class="validate">
                     <label for="routine-name">Routine Name</label>
                 </div>
                 <button class="btn waves-effect waves-light" type="submit" name="action">Create
@@ -69,9 +69,9 @@
             </ul>
                 {% for routine in user_routines %}
                     {% if selected_exercise and exercise.id==selected_exercise.id %}
-                        <a id="{{routine.id}}" href="/routines/{{routine.id}}" class="collection-item active white-text">{{routine.title}}<i class="material-icons right">delete_forever</i></a>
+                        <a id="{{routine.id}}" href="/routines/{{routine.id}}" class="collection-item active white-text">{{ routine.routine_name }}<i class="material-icons right">delete_forever</i></a>
                     {% else %}
-                        <a id="{{routine.id}}" href="/routines/{{routine.id}}" class="collection-item black-text">{{routinetitle}}<i class="material-icons right">delete_forever</i></a>
+                        <a id="{{routine.id}}" href="/routines/{{routine.id}}" class="collection-item black-text">{{ routine.routine_name }}<i class="material-icons right">delete_forever</i></a>
                     {% endif %}
                 {% endfor %}
         </div>

@@ -52,7 +52,50 @@
             <p>{{selected_exercise.equipment}}</p>
             <h5>Level</h5>
             <p>{{selected_exercise.level}}</p>
+
+            <div class="input-field col s9">
+                <select id="routine-select">
+                    <option value="" disabled selected>Choose routine</option>
+                    {% for routine in user_routines %}
+                        <option value="{{ routine.id }}">{{ routine.routine_name }}</option>
+                    {% endfor %}
+                </select>
+                <label>Select Routine</label>
+            </div>
+            <div class="col s12">
+                <button class="btn waves-effect waves-light" onclick="addExerciseToRoutine()">Add to Routine</button>
+            </div>
+
         </div>
     </div>
 </div>
+
+<script>
+    // Function to handle adding exercise to routine
+    function addExerciseToRoutine() {
+        var exerciseId = {{ selected_exercise.id }};
+        var routineId = document.getElementById('routine-select').value;
+
+        // Send AJAX request to add exercise to routine
+        fetch(`/routines/${routineId}/add-exercise`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+            },
+            body: JSON.stringify({ exercise_id: exerciseId })
+        })
+        .then(response => {
+            if (response.ok) {
+                M.toast({ html: 'Exercise added to routine successfully!', classes: 'green' });
+            } else {
+                M.toast({ html: 'Failed to add exercise to routine.', classes: 'red' });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            M.toast({ html: 'An error occurred. Please try again later.', classes: 'red' });
+        });
+    }
+</script>
 {% endblock %}

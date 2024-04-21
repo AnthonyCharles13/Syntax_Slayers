@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, jsonify, request, send_from_directory, flash, redirect, url_for
 from flask_jwt_extended import jwt_required
-from flask_jwt_extended import current_user
+from flask_jwt_extended import current_user, set_access_cookies
 
 from.index import index_views
 from App.models import Exercise, UserRoutine, db
@@ -81,11 +81,13 @@ def signup_user_action():
 
 @user_views.route('/exercises', methods=['GET'])
 @user_views.route('/exercises/<int:exercise_id>', methods=['GET'])
+@jwt_required()
 def get_exercise_page(exercise_id=1):
     exercises = Exercise.query.all()
+    user_routines = UserRoutine.get_user_routines(current_user.id)
     if exercise_id:
         selected_exercise=Exercise.query.filter_by(id=exercise_id).first()
-    return render_template('exercises.html', exercises=exercises, selected_exercise=selected_exercise)
+    return render_template('exercises.html', exercises=exercises, selected_exercise=selected_exercise, user_routines=user_routines)
 
 
 @user_views.route('/api/users', methods=['GET'])
@@ -119,6 +121,11 @@ def create_routine():
     user_id = current_user.id
     routine_name = request.form.get('routine-name')
 
+    # Check if routine name is empty
+    if not routine_name:
+        flash('Routine name cannot be empty.', 'error')
+        return redirect(url_for('user_views.get_routines_page'))
+
     # Check if routine with the same name already exists for the user
     existing_routine = UserRoutine.query.filter_by(user_id=user_id, routine_name=routine_name).first()
     if existing_routine:
@@ -148,7 +155,7 @@ def delete_routine(routine_id):
         flash('You do not have permission to delete this routine.', 'error')
 
     return redirect(url_for('user_views.get_routines_page'))
-
+'''
 # Route to add an exercise to a routine
 @user_views.route('/routines/<int:routine_id>/add-exercise', methods=['POST'])
 @jwt_required()
@@ -166,3 +173,26 @@ def add_exercise_to_routine(routine_id):
         flash('Failed to add exercise to routine.', 'error')
 
     return redirect(url_for('user_views.get_routines_page'))
+'''
+
+@user_views.route('/routines/<int:routine_id>/add-exercise', methods=['POST'])
+@jwt_required()
+def add_exercise_to_routine(routine_id):
+    exercise_id = request.json.get('exercise_id')
+
+    # Check if exercise and routine exist
+    exercise = Exercise.query.get(exercise_id)
+    routine = UserRoutine.query.get(routine_id)
+    if not exercise or not routine:
+        return jsonify({'error': 'Exercise or routine not found'}), 404
+
+    # Check if routine belongs to current user
+    if routine.user_id != current_user.id:
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    # Add exercise to routine
+    if routine.add_exercise(exercise_id):
+        db.session.commit()
+        return jsonify({'message': 'Exercise added to routine successfully'}), 200
+    else:
+        return jsonify({'error': 'Failed to add exercise to routine'}), 500
