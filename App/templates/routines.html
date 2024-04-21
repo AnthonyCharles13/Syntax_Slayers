@@ -42,7 +42,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="row" style="margin-bottom: 10px;">
+<div class="row" style="margin-bottom: 0px;">
     <div class="col s12">
         <div class="create-routine-container">
             <h5 class="routine-heading">Create Routine</h5>
@@ -59,19 +59,19 @@
         </div>
     </div>
 </div>
-<div class="row">
+<div class="row" style="margin-bottom: 0px;">
     <div class="col m5">
         <div class="heading"><h5>Your Routines</h5></div>
-        <div class="list-container collection" style="max-height: 78vh; overflow-y: scroll; margin-left: 10px;">
+        <div class="list-container collection" style="max-height: 65vh; overflow-y: scroll; margin-left: 10px;">
             <ul>
             <li class="collection-item">Dummy Routine 1<i class="material-icons right">delete_forever</i></li>
             <li class="collection-item">Dummy Routine 2<i class="material-icons right">delete_forever</i></li>
             </ul>
                 {% for routine in user_routines %}
-                    {% if selected_exercise and exercise.id==selected_exercise.id %}
-                        <a id="{{routine.id}}" href="/routines/{{routine.id}}" class="collection-item active white-text">{{ routine.routine_name }}<i class="material-icons right">delete_forever</i></a>
+                    {% if selected_routine and routine.id==selected_routine.id %}
+                        <a id="{{routine.id}}" href="/routines/{{routine.id}}" class="collection-item active white-text">{{ routine.routine_name }}<i class="material-icons right" onclick="deleteRoutine('{{ routine.routine_name }}')">delete_forever</i></a>
                     {% else %}
-                        <a id="{{routine.id}}" href="/routines/{{routine.id}}" class="collection-item black-text">{{ routine.routine_name }}<i class="material-icons right">delete_forever</i></a>
+                        <a id="{{routine.id}}" href="/routines/{{routine.id}}" class="collection-item black-text">{{ routine.routine_name }}<i class="material-icons right" onclick="deleteRoutine('{{ routine.routine_name }}')">delete_forever</i></a>
                     {% endif %}
                 {% endfor %}
         </div>
@@ -79,20 +79,36 @@
     
     <div class="col m7">
         <div class="heading" style="text-align: center;"><h5>Exercises</h5></div>
-        <div class="list-container collection" style="max-height: 78vh; overflow-y: scroll; margin-left: 10px;">
+        <div class="list-container collection" style="max-height: 65vh; overflow-y: scroll; margin-left: 10px;">
             <ul class="collapsible">
+                {% if exercises %}
+                    {% for exercise in exercises %}
                 <li>
-                    <div class="collapsible-header">Exercise 1<i class="material-icons right">close</i></div>
+                    <div class="collapsible-header">{{exercise.title}}<i class="material-icons right">close</i></div>
                     <div class="collapsible-body">
-                        <span>Description of Exercise 1</span>
+                        <span><h5>Description</h5>
+                            <p>{{exercise.description}}</p>
+                            <h5>Type</h5>
+                            <p>B{{exercise.exercise_type}}</p>
+                            <h5>Body Part</h5>
+                            <p>{{exercise.bodypart}}</p>
+                            <h5>Equipment</h5>
+                            <p>{{exercise.equipment}}</p>
+                            <h5>Level</h5>
+                            <p>{{exercise.level}}</p>
+                        </span>
                     </div>
                 </li>
+                    {% endfor %}
                 <li>
                     <div class="collapsible-header">Exercise 2<i class="material-icons right">close</i></div>
                     <div class="collapsible-body">
                         <span>Description of Exercise 2</span>
                     </div>
                 </li>
+                {% else %}
+                <p>No exercises found for this routine.</p>
+                {% endif %}
             </ul>
         </div>
     </div>
@@ -115,5 +131,33 @@
         var elems = document.querySelectorAll('.tooltipped');
         var instances = M.Tooltip.init(elems);
     });
+
+    // Function to handle click event on trash icon
+    function deleteRoutine(routineName) {
+        // Send a POST request to the delete routine route
+        fetch(`/routines/${routineName}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'  // Include CSRF token if needed
+            },
+            body: JSON.stringify({})  // Empty body since we're just triggering a route
+        })
+        .then(response => {
+            // Handle the response
+            if (response.ok) {
+                // Routine deleted successfully, reload the page or update UI as needed
+                window.location.reload();  // Reload the page
+            } else {
+                // Handle errors if any
+                console.error('Error deleting routine:', response.statusText);
+            }
+        })
+        .catch(error => {
+            // Handle network errors
+            console.error('Network error:', error);
+        });
+    }
+
 </script>
 {% endblock %}

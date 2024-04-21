@@ -107,12 +107,24 @@ def static_user_page():
 
 # Route to render the routines page
 @user_views.route('/routines', methods=['GET'])
+@user_views.route('/routines/<int:routine_id>', methods=['GET'])
 @jwt_required()
-def get_routines_page():
-    # Fetch all routines for the current user
+def get_routines_page(routine_id=None):
     user_id = current_user.id
     user_routines = UserRoutine.get_user_routines(user_id)
-    return render_template('routines.html', user_routines=user_routines)
+
+    if routine_id is not None:
+        selected_routine = UserRoutine.query.get(routine_id)
+        if selected_routine and selected_routine.user_id == current_user.id:
+            exercises = selected_routine.get_exercises()
+            return render_template('routines.html', user_routines=user_routines, selected_routine=selected_routine, exercises=exercises)
+        else:
+            flash('You do not have permission to view this routine.', 'error')
+            return redirect(url_for('user_views.get_routines_page'))
+    else:
+        # If no routine_id provided, render the page without a selected routine
+        return render_template('routines.html', user_routines=user_routines)
+
 
 # Route to handle creation of a new routine
 @user_views.route('/routines', methods=['POST'])
@@ -138,7 +150,7 @@ def create_routine():
     db.session.commit()
     flash('New routine created successfully!', 'success')
     return redirect(url_for('user_views.get_routines_page'))
-
+'''
 # Route to delete a routine
 @user_views.route('/routines/<int:routine_id>', methods=['DELETE'])
 @jwt_required()
@@ -155,6 +167,7 @@ def delete_routine(routine_id):
         flash('You do not have permission to delete this routine.', 'error')
 
     return redirect(url_for('user_views.get_routines_page'))
+'''
 '''
 # Route to add an exercise to a routine
 @user_views.route('/routines/<int:routine_id>/add-exercise', methods=['POST'])
@@ -196,3 +209,22 @@ def add_exercise_to_routine(routine_id):
         return jsonify({'message': 'Exercise added to routine successfully'}), 200
     else:
         return jsonify({'error': 'Failed to add exercise to routine'}), 500
+
+# Route to delete a routine
+@user_views.route('/routines/<string:routine_name>', methods=['POST'])
+@jwt_required()
+def delete_routine(routine_name):
+    # Fetch all instances of the routine by name for the current user
+    routines_to_delete = UserRoutine.query.filter_by(routine_name=routine_name, user_id=current_user.id).all()
+
+    # Check if any routines were found
+    if routines_to_delete:
+        # Delete each instance of the routine
+        for routine in routines_to_delete:
+            db.session.delete(routine)
+        db.session.commit()
+        flash('Routine deleted successfully!', 'success')
+    else:
+        flash('You do not have any routines with this name.', 'error')
+
+    return redirect(url_for('user_views.get_routines_page'))
