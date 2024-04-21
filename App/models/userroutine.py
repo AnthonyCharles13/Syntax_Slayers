@@ -7,27 +7,25 @@ class UserRoutine(db.Model):
     user = db.relationship('User', backref=db.backref('user_routines', lazy=True))
     exercise = db.relationship('Exercise')
 
+    def __init__(self, routine_name, user_id):
+        self.routine_name = routine_name
+        self.user_id = user_id
+
     def add_exercise(self, exercise_id):
-        exercises = Exercise.query.get(exercise_id)
-        if exercises:
-            try:
-                new_exercise = UserRoutine(exercise_id=exercise_id, routine_name=self.routine_name, user_id=self.user_id)
-                db.session.add(new_exercise)
-                db.session.commit()
-                return new_exercise
-            except Exception as e:
-                print(e)
-                db.session.rollback()
-                return None
-        return None
-        
-    def remove_exercise(self, exercise_id):
-        exercise_to_remove = UserRoutine.query.filter_by(exercise_id=exercise_id, routine_name=self.routine_name, user_id=self.user_id).first()
-        if exercise_to_remove:
-            db.session.delete(exercise_to_remove)
+        exercise = Exercise.query.get(exercise_id)
+        if exercise:
+            self.exercises.append(exercise)
             db.session.commit()
             return True
-        return None
+        return False
+        
+    def remove_exercise(self, exercise_id):
+        exercise = Exercise.query.get(exercise_id)
+        if exercise in self.exercises:
+            self.exercises.remove(exercise)
+            db.session.commit()
+            return True
+        return False
 
     def clear_routine(self):
         exercises = UserRoutine.query.filter_by(routine_name=self.routine_name, user_id=self.user_id).all()

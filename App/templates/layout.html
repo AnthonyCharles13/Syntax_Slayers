@@ -15,12 +15,13 @@
     
       <nav class="blue">
           <div class="nav-wrapper">
-              <a href="#!" class="brand-logo center">{% block page %}{% endblock %}</a>
+              <a href="/index" class="brand-logo center">{% block page %}{% endblock %}</a>
               
               {% if is_authenticated %}
               <ul id="nav-mobile" class="left">
-                  <li><a href="/">Home</a></li>
+                  <li><a href="/index">Home</a></li>
                   <li><a href="/exercises">Exercises</a></li>
+                  <li><a href="/routines">Routines</a></li>
                   <li><a href="/users">Users Jinja</a></li>
                   {% if is_authenticated %}
                     <li><a href="/identify">Identify</a></li>

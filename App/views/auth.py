@@ -20,9 +20,12 @@ def get_user_page():
     return render_template('users.html', users=users)
 
 @auth_views.route('/exercises', methods=['GET'])
-def get_exercise_page():
+@auth_views.route('/exercises/<int:exercise_id>', methods=['GET'])
+def get_exercise_page(exercise_id=1):
     exercises = Exercise.query.all()
-    return render_template('exercises.html', exercises=exercises)
+    if exercise_id:
+        selected_exercise=Exercise.query.filter_by(id=exercise_id).first()
+    return render_template('exercises.html', exercises=exercises, selected_exercise=selected_exercise)
 
 @auth_views.route('/identify', methods=['GET'])
 @jwt_required()

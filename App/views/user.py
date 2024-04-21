@@ -79,9 +79,12 @@ def signup_user_action():
 
 
 @user_views.route('/exercises', methods=['GET'])
-def get_exercise_page():
+@user_views.route('/exercises/<int:exercise_id>', methods=['GET'])
+def get_exercise_page(exercise_id=1):
     exercises = Exercise.query.all()
-    return render_template('exercises.html', exercises=exercises)
+    if exercise_id:
+        selected_exercise=Exercise.query.filter_by(id=exercise_id).first()
+    return render_template('exercises.html', exercises=exercises, selected_exercise=selected_exercise)
 
 
 @user_views.route('/api/users', methods=['GET'])
