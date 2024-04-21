@@ -4,7 +4,7 @@
 
 {% block styles %}
 <style>
-    .collection .collection-item.active{
+    .collection .collection-item.active {
         background-color: cornflowerblue;
     }
 
@@ -20,39 +20,91 @@
         text-align: center;
     }
 
+    .create-routine-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+
+    .create-routine-container form {
+        margin-right: 10px; /* Adjust spacing between input and button */
+    }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="row">
+    <div class="col s12">
+        <div class="create-routine-container">
+            <h5>Create Routine</h5>
+            <form id="create-routine-form" class="col s9">
+                <div class="input-field">
+                    <input id="routine-name" type="text" class="validate">
+                    <label for="routine-name">Routine Name</label>
+                </div>
+            </form>
+            <button class="btn waves-effect waves-light" type="submit" name="action">Create
+                <i class="material-icons right">add</i>
+            </button>
+        </div>
+    </div>
+</div>
+<div class="row">
     <div class="col m5">
-        <div class="heading"><h5>EXERCISES</h5></div>
+        <div class="heading"><h5>Your Routines</h5></div>
         <div class="list-container collection" style="max-height: 78vh; overflow-y: scroll; margin-left: 10px;">
+            <ul>
+            <li class="collection-item">Dummy Routine 1<i class="material-icons right">delete_forever</i></li>
+            <li class="collection-item">Dummy Routine 2<i class="material-icons right">delete_forever</i></li>
+            </ul>
                 {% for exercise in exercises %}
                     {% if selected_exercise and exercise.id==selected_exercise.id %}
-                        <a id="{{exercise.id}}" href="/exercises/{{exercise.id}}" class="collection-item active white-text">{{exercise.title}}</a>
+                        <a id="{{exercise.id}}" href="/exercises/{{exercise.id}}" class="collection-item active white-text">{{exercise.title}}<i class="material-icons right">delete_forever</i></a>
                     {% else %}
-                        <a id="{{exercise.id}}" href="/exercises/{{exercise.id}}" class="collection-item black-text">{{exercise.title}}</a>
+                        <a id="{{exercise.id}}" href="/exercises/{{exercise.id}}" class="collection-item black-text">{{exercise.title}}<i class="material-icons right">delete_forever</i></a>
                     {% endif %}
                 {% endfor %}
         </div>
     </div>
     
     <div class="col m7">
-        <div class="heading"><h5>INFORMATION</h5></div>
-        <div>
-            <h5 style="text-align: center;">{{selected_exercise.title}}</h5>
-            <h5>Description</h5>
-            <p>{{selected_exercise.description}}</p>
-            <h5>Type</h5>
-            <p>B{{selected_exercise.exercise_type}}</p>
-            <h5>Body Part</h5>
-            <p>{{selected_exercise.bodypart}}</p>
-            <h5>Equipment</h5>
-            <p>{{selected_exercise.equipment}}</p>
-            <h5>Level</h5>
-            <p>{{selected_exercise.level}}</p>
+        <div class="heading"><h5>Exercises</h5></div>
+        <div class="list-container collection" style="max-height: 78vh; overflow-y: scroll; margin-left: 10px;">
+            <ul class="collapsible">
+                <li>
+                    <div class="collapsible-header">Exercise 1<i class="material-icons right">close</i></div>
+                    <div class="collapsible-body">
+                        <span>Description of Exercise 1</span>
+                    </div>
+                </li>
+                <li>
+                    <div class="collapsible-header">Exercise 2<i class="material-icons right">close</i></div>
+                    <div class="collapsible-body">
+                        <span>Description of Exercise 2</span>
+                    </div>
+                </li>
+            </ul>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var elems = document.querySelectorAll('.collapsible');
+        var instances = M.Collapsible.init(elems);
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var elems = document.querySelectorAll('.modal');
+        var instances = M.Modal.init(elems);
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var elems = document.querySelectorAll('.tooltipped');
+        var instances = M.Tooltip.init(elems);
+    });
+</script>
 {% endblock %}

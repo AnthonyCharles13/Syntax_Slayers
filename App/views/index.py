@@ -1,5 +1,5 @@
 from flask import Blueprint, redirect, render_template, request, send_from_directory, jsonify, url_for
-from App.models import db, Exercise
+from App.models import db, Exercise, UserRoutine
 from App.controllers import create_user
 import csv
 

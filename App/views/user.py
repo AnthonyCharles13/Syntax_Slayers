@@ -1,8 +1,9 @@
 from flask import Blueprint, render_template, jsonify, request, send_from_directory, flash, redirect, url_for
-from flask_jwt_extended import jwt_required, current_user as jwt_current_user, set_access_cookies
+from flask_jwt_extended import jwt_required
+from flask_jwt_extended import current_user
 
 from.index import index_views
-from App.models import Exercise
+from App.models import Exercise, UserRoutine
 from App.controllers import (
     create_user,
     get_all_users,
@@ -101,3 +102,67 @@ def create_user_endpoint():
 @user_views.route('/static/users', methods=['GET'])
 def static_user_page():
   return send_from_directory('static', 'static-user.html')
+
+# Route to render the routines page
+@user_views.route('/routines', methods=['GET'])
+@jwt_required()
+def get_routines_page():
+    # Fetch all routines for the current user
+    user_id = current_user.id
+    user_routines = UserRoutine.get_user_routines(user_id)
+    return render_template('routines.html', user_routines=user_routines)
+
+# Route to handle creation of a new routine
+@user_views.route('/routines', methods=['POST'])
+@jwt_required()
+def create_routine():
+    user_id = current_user.id
+    routine_name = request.form.get('routine_name')
+
+    # Check if routine with the same name already exists for the user
+    existing_routine = UserRoutine.query.filter_by(user_id=user_id, routine_name=routine_name).first()
+    if existing_routine:
+        flash('Routine name already exists. Please choose a different name.', 'error')
+        return redirect(url_for('user_views.get_routines_page'))
+
+    # Create the new routine
+    new_routine = UserRoutine(routine_name=routine_name, user_id=user_id)
+    db.session.add(new_routine)
+    db.session.commit()
+    flash('New routine created successfully!', 'success')
+    return redirect(url_for('user_views.get_routines_page'))
+
+# Route to delete a routine
+@user_views.route('/routines/<int:routine_id>', methods=['DELETE'])
+@jwt_required()
+def delete_routine(routine_id):
+    user_id = jwt_current_user.id
+    routine_to_delete = UserRoutine.query.get(routine_id)
+
+    # Check if the routine belongs to the current user
+    if routine_to_delete and routine_to_delete.user_id == user_id:
+        db.session.delete(routine_to_delete)
+        db.session.commit()
+        flash('Routine deleted successfully!', 'success')
+    else:
+        flash('You do not have permission to delete this routine.', 'error')
+
+    return redirect(url_for('user_views.get_routines_page'))
+
+# Route to add an exercise to a routine
+@user_views.route('/routines/<int:routine_id>/add-exercise', methods=['POST'])
+@jwt_required()
+def add_exercise_to_routine(routine_id):
+    user_id = jwt_current_user.id
+    exercise_id = request.form.get('exercise_id')
+
+    # Check if the exercise and routine belong to the current user
+    routine = UserRoutine.query.get(routine_id)
+    exercise = Exercise.query.get(exercise_id)
+    if routine and exercise and routine.user_id == user_id:
+        routine.add_exercise(exercise_id)
+        flash('Exercise added to routine successfully!', 'success')
+    else:
+        flash('Failed to add exercise to routine.', 'error')
+
+    return redirect(url_for('user_views.get_routines_page'))
