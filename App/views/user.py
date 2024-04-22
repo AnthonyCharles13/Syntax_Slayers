@@ -258,4 +258,28 @@ def add_exercise_to_routine(selected_exercise_id=None):
 
     return redirect(url_for('user_views.get_exercise_page'))
 
-
+@user_views.route('/routines/<int:routine_id>/exercises/<int:exercise_id>', methods=['POST'])
+@jwt_required()
+def delete_exercise_from_routine(routine_id, exercise_id):
+    # Fetch the current user ID
+    user_id = current_user.id
+    
+    # Fetch the routine name from the routine ID
+    selected_routine = UserRoutine.query.filter_by(id=routine_id).first()
+    if selected_routine:
+        routine_name = selected_routine.routine_name
+    else:
+        flash('Routine not found', 'error')
+        return redirect(url_for('user_views.get_routines_page'))
+    
+    # Filter the UserRoutine table by user ID, routine name, and exercise ID
+    user_routine = UserRoutine.query.filter_by(user_id=user_id, routine_name=routine_name, exercise_id=exercise_id).first()
+    if user_routine:
+        # Delete the user routine record
+        db.session.delete(user_routine)
+        db.session.commit()
+        flash('Exercise removed from routine successfully', 'success')
+    else:
+        flash('Exercise not found in the selected routine', 'error')
+    
+    return redirect(url_for('user_views.get_routines_page'))

@@ -22,12 +22,17 @@ class UserRoutine(db.Model):
         return False
         
     def remove_exercise(self, exercise_id):
+        # Fetch the exercise object
         exercise = Exercise.query.get(exercise_id)
-        if exercise in self.exercises:
-            self.exercises.remove(exercise)
+
+        # Check if the exercise exists
+        if exercise:
+            # Remove the exercise from the routine
+            self.exercise = None  # Set the exercise attribute to None
             db.session.commit()
             return True
-        return False
+        else:
+            return False
 
     def clear_routine(self):
         exercises = UserRoutine.query.filter_by(routine_name=self.routine_name, user_id=self.user_id).all()

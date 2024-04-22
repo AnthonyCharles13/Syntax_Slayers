@@ -80,7 +80,7 @@
                 {% if exercises %}
                     {% for exercise in exercises %}
                         <li>
-                            <div class="collapsible-header">{{exercise.title}}<i class="material-icons right">close</i></div>
+                            <div class="collapsible-header">{{exercise.title}}</div>
                             <div class="collapsible-body">
                                 <span><h6>Description</h6>
                                     <p>{{exercise.description}}</p>
@@ -92,6 +92,11 @@
                                     <p>{{exercise.equipment}}</p>
                                     <h6>Level</h6>
                                     <p>{{exercise.level}}</p>
+                                    <form action="{{ url_for('user_views.delete_exercise_from_routine', routine_id=selected_routine.id, exercise_id=exercise.id) }}" method="POST">
+                                        <button class="btn waves-effect waves-light" type="submit" name="action">Remove
+                                            <i class="material-icons right">remove_circle</i>
+                                        </button>
+                                    </form>
                                 </span>
                             </div>
                         </li>
