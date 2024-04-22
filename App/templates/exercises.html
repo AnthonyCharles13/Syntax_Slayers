@@ -53,18 +53,21 @@
             <h5>Level</h5>
             <p>{{selected_exercise.level}}</p>
 
-            <div class="input-field col s9">
-                <select id="routine-select">
-                    <option value="" disabled selected>Choose routine</option>
-                    {% for routine in user_routines %}
-                        <option value="{{ routine.id }}">{{ routine.routine_name }}</option>
-                    {% endfor %}
-                </select>
-                <label>Select Routine</label>
-            </div>
-            <div class="col s12">
-                <button class="btn waves-effect waves-light" onclick="addExerciseToRoutine()">Add to Routine</button>
-            </div>
+            <form id="add-exercise-form" action="/exercises/{{selected_exercise.id}}" method="POST">
+                <div class="input-field col s9">
+                    <select id="routine-select" name="routine_name">
+                        <option value="" disabled selected>Choose routine</option>
+                        {% for routine in user_routines %}
+                            <option value="{{ routine.routine_name }}">{{ routine.routine_name }}</option>
+                        {% endfor %}
+                    </select>
+                    <label>Select Routine</label>
+                </div>
+                <input type="hidden" id="exercise-id" name="exercise_id">
+                <div class="col s12">
+                    <button class="btn waves-effect waves-light" type="submit">Add to Routine</button>
+                </div>
+            </form>
 
         </div>
     </div>

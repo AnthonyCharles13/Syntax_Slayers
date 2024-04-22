@@ -63,17 +63,13 @@
     <div class="col m5">
         <div class="heading"><h5>Your Routines</h5></div>
         <div class="list-container collection" style="max-height: 65vh; overflow-y: scroll; margin-left: 10px;">
-            <ul>
-            <li class="collection-item">Dummy Routine 1<i class="material-icons right">delete_forever</i></li>
-            <li class="collection-item">Dummy Routine 2<i class="material-icons right">delete_forever</i></li>
-            </ul>
-                {% for routine in user_routines %}
-                    {% if selected_routine and routine.id==selected_routine.id %}
-                        <a id="{{routine.id}}" href="/routines/{{routine.id}}" class="collection-item active white-text">{{ routine.routine_name }}<i class="material-icons right" onclick="deleteRoutine('{{ routine.routine_name }}')">delete_forever</i></a>
-                    {% else %}
-                        <a id="{{routine.id}}" href="/routines/{{routine.id}}" class="collection-item black-text">{{ routine.routine_name }}<i class="material-icons right" onclick="deleteRoutine('{{ routine.routine_name }}')">delete_forever</i></a>
-                    {% endif %}
-                {% endfor %}
+            {% for routine in user_routines %}
+                {% if selected_routine and routine.id==selected_routine.id %}
+                    <a id="{{routine.id}}" href="/routines/{{routine.id}}" class="collection-item active white-text">{{ routine.routine_name }}<i class="material-icons right" onclick="deleteRoutine('{{ routine.routine_name }}')">delete_forever</i></a>
+                {% else %}
+                    <a id="{{routine.id}}" href="/routines/{{routine.id}}" class="collection-item black-text">{{ routine.routine_name }}<i class="material-icons right" onclick="deleteRoutine('{{ routine.routine_name }}')">delete_forever</i></a>
+                {% endif %}
+            {% endfor %}
         </div>
     </div>
     
@@ -83,31 +79,25 @@
             <ul class="collapsible">
                 {% if exercises %}
                     {% for exercise in exercises %}
-                <li>
-                    <div class="collapsible-header">{{exercise.title}}<i class="material-icons right">close</i></div>
-                    <div class="collapsible-body">
-                        <span><h5>Description</h5>
-                            <p>{{exercise.description}}</p>
-                            <h5>Type</h5>
-                            <p>B{{exercise.exercise_type}}</p>
-                            <h5>Body Part</h5>
-                            <p>{{exercise.bodypart}}</p>
-                            <h5>Equipment</h5>
-                            <p>{{exercise.equipment}}</p>
-                            <h5>Level</h5>
-                            <p>{{exercise.level}}</p>
-                        </span>
-                    </div>
-                </li>
+                        <li>
+                            <div class="collapsible-header">{{exercise.title}}<i class="material-icons right">close</i></div>
+                            <div class="collapsible-body">
+                                <span><h6>Description</h6>
+                                    <p>{{exercise.description}}</p>
+                                    <h6>Type</h6>
+                                    <p>B{{exercise.exercise_type}}</p>
+                                    <h6>Body Part</h6>
+                                    <p>{{exercise.bodypart}}</p>
+                                    <h6>Equipment</h6>
+                                    <p>{{exercise.equipment}}</p>
+                                    <h6>Level</h6>
+                                    <p>{{exercise.level}}</p>
+                                </span>
+                            </div>
+                        </li>
                     {% endfor %}
-                <li>
-                    <div class="collapsible-header">Exercise 2<i class="material-icons right">close</i></div>
-                    <div class="collapsible-body">
-                        <span>Description of Exercise 2</span>
-                    </div>
-                </li>
                 {% else %}
-                <p>No exercises found for this routine.</p>
+                    <p style="text-align: center;">No Routine Selected Or Exercises Not Found In Routine.</p>
                 {% endif %}
             </ul>
         </div>

@@ -8,9 +8,10 @@ class UserRoutine(db.Model):
     user = db.relationship('User', backref=db.backref('user_routines', lazy=True))
     exercise = db.relationship('Exercise')
 
-    def __init__(self, routine_name, user_id):
+    def __init__(self, routine_name, user_id, exercise_id=None):
         self.routine_name = routine_name
         self.user_id = user_id
+        self.exercise_id = exercise_id
 
     def add_exercise(self, exercise_id):
         exercise = Exercise.query.get(exercise_id)
@@ -35,7 +36,8 @@ class UserRoutine(db.Model):
         db.session.commit()
 
     def get_exercises(self):
-        exercises = UserRoutine.query.filter_by(routine_name=self.routine_name, user_id=self.user_id).all()
+        # Query exercises associated with the routine based on user_id, routine_name, and non-null exercise_id
+        exercises = Exercise.query.join(UserRoutine).filter(UserRoutine.user_id == self.user_id, UserRoutine.routine_name == self.routine_name, Exercise.id.isnot(None)).all()
         return exercises
 
     def update_routine_name(self, new_name):
@@ -45,4 +47,13 @@ class UserRoutine(db.Model):
     @staticmethod
     def get_user_routines(user_id):
         user_routines = UserRoutine.query.filter_by(user_id=user_id).all()
-        return user_routines
+
+        # Extract unique routine names
+        unique_routine_names = set()
+        unique_user_routines = []
+        for routine in user_routines:
+            if routine.routine_name not in unique_routine_names:
+                unique_routine_names.add(routine.routine_name)
+                unique_user_routines.append(routine)
+
+        return unique_user_routines

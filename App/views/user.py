@@ -116,6 +116,7 @@ def get_routines_page(routine_id=None):
     if routine_id is not None:
         selected_routine = UserRoutine.query.get(routine_id)
         if selected_routine and selected_routine.user_id == current_user.id:
+            # Retrieve exercises associated with the selected routine
             exercises = selected_routine.get_exercises()
             return render_template('routines.html', user_routines=user_routines, selected_routine=selected_routine, exercises=exercises)
         else:
@@ -187,7 +188,7 @@ def add_exercise_to_routine(routine_id):
 
     return redirect(url_for('user_views.get_routines_page'))
 '''
-
+'''
 @user_views.route('/routines/<int:routine_id>/add-exercise', methods=['POST'])
 @jwt_required()
 def add_exercise_to_routine(routine_id):
@@ -209,7 +210,7 @@ def add_exercise_to_routine(routine_id):
         return jsonify({'message': 'Exercise added to routine successfully'}), 200
     else:
         return jsonify({'error': 'Failed to add exercise to routine'}), 500
-
+'''
 # Route to delete a routine
 @user_views.route('/routines/<string:routine_name>', methods=['POST'])
 @jwt_required()
@@ -228,3 +229,33 @@ def delete_routine(routine_name):
         flash('You do not have any routines with this name.', 'error')
 
     return redirect(url_for('user_views.get_routines_page'))
+
+
+@user_views.route('/exercises/<int:selected_exercise_id>', methods=['POST'])
+@jwt_required()
+def add_exercise_to_routine(selected_exercise_id=None):
+    # Get the routine name and exercise ID from the form data
+    routine_name = request.form.get('routine_name')
+
+    # Check if the routine name and exercise ID are provided
+    if not routine_name or not selected_exercise_id:
+        return jsonify({'error': 'Routine name or exercise ID not provided'}), 400
+
+    # Fetch the user's ID
+    user_id = current_user.id
+
+    # Check if the routine exists for the current user
+    #existing_routine = UserRoutine.query.filter_by(routine_name=routine_name, user_id=user_id).first()
+    #if not existing_routine:
+        # Create a new routine if it doesn't exist
+    new_routine = UserRoutine(routine_name=routine_name, user_id=user_id, exercise_id=selected_exercise_id)
+    db.session.add(new_routine)
+    db.session.commit()
+    flash("Exercise added to routine")
+    # Add the exercise to the routine
+    #existing_routine.add_exercise(exercise_id)
+    #db.session.commit()
+
+    return redirect(url_for('user_views.get_exercise_page'))
+
+
