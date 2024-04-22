@@ -72,33 +72,4 @@
         </div>
     </div>
 </div>
-
-<script>
-    // Function to handle adding exercise to routine
-    function addExerciseToRoutine() {
-        var exerciseId = {{ selected_exercise.id }};
-        var routineId = document.getElementById('routine-select').value;
-
-        // Send AJAX request to add exercise to routine
-        fetch(`/routines/${routineId}/add-exercise`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-            },
-            body: JSON.stringify({ exercise_id: exerciseId })
-        })
-        .then(response => {
-            if (response.ok) {
-                M.toast({ html: 'Exercise added to routine successfully!', classes: 'green' });
-            } else {
-                M.toast({ html: 'Failed to add exercise to routine.', classes: 'red' });
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            M.toast({ html: 'An error occurred. Please try again later.', classes: 'red' });
-        });
-    }
-</script>
 {% endblock %}

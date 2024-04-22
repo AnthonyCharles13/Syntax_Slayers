@@ -22,13 +22,10 @@ class UserRoutine(db.Model):
         return False
         
     def remove_exercise(self, exercise_id):
-        # Fetch the exercise object
         exercise = Exercise.query.get(exercise_id)
 
-        # Check if the exercise exists
         if exercise:
-            # Remove the exercise from the routine
-            self.exercise = None  # Set the exercise attribute to None
+            self.exercise = None
             db.session.commit()
             return True
         else:
@@ -41,7 +38,6 @@ class UserRoutine(db.Model):
         db.session.commit()
 
     def get_exercises(self):
-        # Query exercises associated with the routine based on user_id, routine_name, and non-null exercise_id
         exercises = Exercise.query.join(UserRoutine).filter(UserRoutine.user_id == self.user_id, UserRoutine.routine_name == self.routine_name, Exercise.id.isnot(None)).all()
         return exercises
 
@@ -52,8 +48,6 @@ class UserRoutine(db.Model):
     @staticmethod
     def get_user_routines(user_id):
         user_routines = UserRoutine.query.filter_by(user_id=user_id).all()
-
-        # Extract unique routine names
         unique_routine_names = set()
         unique_user_routines = []
         for routine in user_routines:

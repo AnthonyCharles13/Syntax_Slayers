@@ -11,7 +11,7 @@ def index_page():
 
 @index_views.route('/index', methods=['GET'])
 def get_index_page():
-    return render_template('index.html')
+    return render_template('routines.html')
 
 @index_views.route('/init', methods=['GET'])
 def init():
@@ -23,12 +23,10 @@ def init():
         with open(csv_file, newline='', encoding='utf-8') as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
-                # Handle missing or empty fields
                 for key, value in row.items():
                     if value == '':
                         row[key] = None
                 
-                # Create Exercise object and add to database
                 exercise = Exercise(
                     title=row['Title'],
                     description=row['Desc'],
@@ -41,12 +39,10 @@ def init():
                 )
                 db.session.add(exercise)
 
-        # Commit changes to the database
         db.session.commit()
         print("Exercises initialized successfully.")
 
     except Exception as e:
-        # Rollback changes and print error message
         db.session.rollback()
         print("Error initializing exercises:", e)
     create_user('bob', 'bobpass')
