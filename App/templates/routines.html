@@ -38,6 +38,7 @@
     .create-routine-container button {
     margin-top: 10px; /* Adjust the margin to bring down the button */
 }
+
 </style>
 {% endblock %}
 
@@ -64,12 +65,24 @@
         <div class="heading"><h5>Your Routines</h5></div>
         <div class="list-container collection" style="max-height: 65vh; overflow-y: scroll; margin-left: 10px;">
             {% for routine in user_routines %}
-                {% if selected_routine and routine.id==selected_routine.id %}
-                    <a id="{{routine.id}}" href="/routines/{{routine.id}}" class="collection-item active white-text">{{ routine.routine_name }}<i class="material-icons right" onclick="deleteRoutine('{{ routine.routine_name }}')">delete_forever</i></a>
-                {% else %}
-                    <a id="{{routine.id}}" href="/routines/{{routine.id}}" class="collection-item black-text">{{ routine.routine_name }}<i class="material-icons right" onclick="deleteRoutine('{{ routine.routine_name }}')">delete_forever</i></a>
-                {% endif %}
-            {% endfor %}
+    {% if selected_routine and routine.id == selected_routine.id %}
+        <a id="{{routine.id}}" href="/routines/{{routine.id}}" class="collection-item active white-text">{{ routine.routine_name }}
+            <form style="display: inline;" action="{{ url_for('user_views.delete_routine', routine_id=routine.id) }}" method="POST">
+                <button class="btn-flat waves-effect waves-light" type="submit">
+                    <i class="material-icons right" style="justify-content: space-between;">delete_forever</i>
+                </button>
+            </form>
+        </a>
+    {% else %}
+        <a id="{{routine.id}}" href="/routines/{{routine.id}}" class="collection-item black-text">{{ routine.routine_name }}
+            <form style="display: inline;" action="{{ url_for('user_views.delete_routine', routine_id=routine.id) }}" method="POST">
+                <button class="btn-flat waves-effect waves-light" type="submit">
+                    <i class="material-icons right" style="justify-content: space-between;">delete_forever</i>
+                </button>
+            </form>
+        </a>
+    {% endif %}
+{% endfor %}
         </div>
     </div>
     

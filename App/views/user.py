@@ -211,6 +211,7 @@ def add_exercise_to_routine(routine_id):
     else:
         return jsonify({'error': 'Failed to add exercise to routine'}), 500
 '''
+'''
 # Route to delete a routine
 @user_views.route('/routines/<string:routine_name>', methods=['POST'])
 @jwt_required()
@@ -229,7 +230,7 @@ def delete_routine(routine_name):
         flash('You do not have any routines with this name.', 'error')
 
     return redirect(url_for('user_views.get_routines_page'))
-
+'''
 
 @user_views.route('/exercises/<int:selected_exercise_id>', methods=['POST'])
 @jwt_required()
@@ -281,5 +282,33 @@ def delete_exercise_from_routine(routine_id, exercise_id):
         flash('Exercise removed from routine successfully', 'success')
     else:
         flash('Exercise not found in the selected routine', 'error')
+    
+    return redirect(url_for('user_views.get_routines_page'))
+
+
+@user_views.route('/routines/<int:routine_id>', methods=['POST'])
+@jwt_required()
+def delete_routine(routine_id):
+    # Fetch the current user ID
+    user_id = current_user.id
+    
+    # Fetch the routine name from the routine ID
+    selected_routine = UserRoutine.query.filter_by(id=routine_id).first()
+    if selected_routine:
+        routine_name = selected_routine.routine_name
+    else:
+        flash('Routine not found', 'error')
+        return redirect(url_for('user_views.get_routines_page'))
+    
+    # Filter the UserRoutine table by user ID and routine name
+    user_routines = UserRoutine.query.filter_by(user_id=user_id, routine_name=routine_name).all()
+    if user_routines:
+        # Delete all user routine records with matching user ID and routine name
+        for user_routine in user_routines:
+            db.session.delete(user_routine)
+        db.session.commit()
+        flash('Routine deleted successfully', 'success')
+    else:
+        flash('Routine not found', 'error')
     
     return redirect(url_for('user_views.get_routines_page'))
